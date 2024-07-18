@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+        }
+        .timeline {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .timeline-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 1s;
+        }
+        button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Age Calculator</h1>
+        <div class="form-group">
+            <label for="dob">Date of Birth:</label>
+            <input type="text" id="dob" required>
+        </div>
+        <button onclick="calculateAge()">Calculate Age</button>
+        <button onclick="resetCalculator()">Reset</button>
+        <div id="result" class="result"></div>
+        <div id="timeline" class="timeline"></div>
+    </div>
+
+    <script>
+        let flatpickrInstance;
+
+        window.onload = function() {
+            flatpickrInstance = flatpickr("#dob", {});
+        }
+
+        const historicalEvents = [
+            { year: 1900, event: "Quantum theory is introduced by Max Planck" },
+            { year: 1903, event: "Wright brothers make their first powered flight" },
+            { year: 1905, event: "Albert Einstein publishes his theory of special relativity" },
+            { year: 1912, event: "The Titanic sinks on its maiden voyage" },
+            { year: 1914, event: "World War I begins" },
+            { year: 1918, event: "World War I ends" },
+            { year: 1928, event: "Alexander Fleming discovers penicillin" },
+            { year: 1929, event: "The Great Depression begins" },
+            { year: 1939, event: "World War II begins" },
+            { year: 1945, event: "World War II ends; United Nations is founded" },
+            { year: 1947, event: "India gains independence from British rule" },
+            { year: 1953, event: "DNA structure is discovered by Watson and Crick" },
+            { year: 1957, event: "Soviet Union launches Sputnik 1, the first artificial satellite" },
+            { year: 1961, event: "Yuri Gagarin becomes the first human to journey into outer space" },
+            { year: 1963, event: "Martin Luther King Jr. delivers his 'I Have a Dream' speech" },
+            { year: 1969, event: "Apollo 11 astronauts land on the moon" },
+            { year: 1971, event: "The first email is sent" },
+            { year: 1975, event: "Microsoft is founded" },
+            { year: 1976, event: "Apple Computer Company is formed" },
+            { year: 1989, event: "The Berlin Wall falls" },
+            { year: 1990, event: "The World Wide Web is invented" },
+            { year: 1991, event: "The Soviet Union dissolves" },
+            { year: 1997, event: "Google.com is registered as a domain" },
+            { year: 2001, event: "September 11 terrorist attacks occur in the United States" },
+            { year: 2003, event: "Human Genome Project is completed" },
+            { year: 2004, event: "Facebook is launched" },
+            { year: 2007, event: "The first iPhone is released" },
+            { year: 2008, event: "Global financial crisis occurs" },
+            { year: 2010, event: "The Arab Spring begins" },
+            { year: 2012, event: "Higgs boson particle is discovered" },
+            { year: 2015, event: "Paris Agreement on climate change is adopted" },
+            { year: 2016, event: "The United Kingdom votes to leave the European Union (Brexit)" },
+            { year: 2019, event: "First image of a black hole is captured" },
+            { year: 2020, event: "COVID-19 pandemic begins" },
+            { year: 2021, event: "Perseverance rover lands on Mars" },
+            { year: 2022, event: "James Webb Space Telescope begins operations" },
+            { year: 2023, event: "AI chatbots like ChatGPT gain widespread popularity" }
+        ];
+
+        function calculateAge() {
+            const dob = moment(document.getElementById('dob').value);
+            const now = moment();
+            const duration = moment.duration(now.diff(dob));
+            const years = duration.years();
+            const months = duration.months();
+            const days = duration.days();
+
+            const zodiacSigns = ["Capricorn", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini",
+                "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius"];
+            const chineseZodiac = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake",
+                "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"];
+
+            const zodiacSign = zodiacSigns[Math.floor((dob.month() * 30 + dob.date()) / 30.44) % 12];
+            const chineseZodiacSign = chineseZodiac[(dob.year() - 4) % 12];
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <p class="fade-in">You are ${years} years, ${months} months, and ${days} days old.</p>
+                <p class="fade-in">Your zodiac sign: ${zodiacSign}</p>
+                <p class="fade-in">Your Chinese zodiac: ${chineseZodiacSign}</p>
+            `;
+
+            const timelineDiv = document.getElementById('timeline');
+            timelineDiv.innerHTML = '<h3>Historical Events in Your Lifetime:</h3>';
+            historicalEvents.forEach(event => {
+                if (event.year >= dob.year() && event.year <= now.year()) {
+                    const ageAtEvent = event.year - dob.year();
+                    timelineDiv.innerHTML += `
+                        <div class="timeline-item fade-in">
+                            <strong>${event.year}</strong> (Age ${ageAtEvent}): ${event.event}
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function resetCalculator() {
+            document.getElementById('dob').value = '';
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('timeline').innerHTML = '';
+            flatpickrInstance.clear();
+        }
+    </script>
+</body>
+</html>
